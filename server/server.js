@@ -38,18 +38,23 @@ app.use('/api/auth', authRoutes);
 app.use('/api/coupons', couponRoutes);
 
 // Serve static files in production
+// Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../client/dist')));
+  const clientPath = path.resolve(__dirname, '../client/dist');
+  app.use(express.static(clientPath));
 
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(clientPath, 'index.html'), (err) => {
+      if (err) {
+        res.status(500).send('Error loading frontend');
+      }
     });
+  });
+} else {
+  app.get('/', (req, res) => {
+    res.send('API is working');
+  });
 }
-
-app.get('/', (req, res) => {
-    res.send("API working");
-});
-
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
