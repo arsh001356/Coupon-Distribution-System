@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const { v4: uuidv4 } = require('uuid');
-const path = require('path');
 
 const authRoutes = require('./routes/authRoutes');
 const couponRoutes = require('./routes/couponRoutes');
@@ -35,29 +34,14 @@ app.use((req, res, next) => {
     next();
 });
 
-// Routes
+// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/coupons', couponRoutes);
 
-// Serve static files in production
-if (process.env.NODE_ENV === 'production') {
-    const clientPath = path.join(__dirname, '../client/dist');
-
-    app.use(express.static(clientPath));
-
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(clientPath, 'index.html'), (err) => {
-            if (err) {
-                console.error('Error serving index.html:', err);
-                res.status(500).send('Error loading frontend');
-            }
-        });
-    });
-} else {
-    app.get('/', (req, res) => {
-        res.send('API is working');
-    });
-}
+// Root Route (For API Testing)
+app.get('/', (req, res) => {
+    res.send('API is working');
+});
 
 // Connect to MongoDB and Start Server
 mongoose
