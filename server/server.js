@@ -45,7 +45,9 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile(path.join(__dirname, '../client/dist/index.html'));
     });
 }
-
+app.get('/', (req, res) => {
+    res.send("api working")
+});
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
